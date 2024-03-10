@@ -8,18 +8,21 @@ import {
     POST_CHANGE_USER, POST_REFUSAL
 } from "../modules/MainModule";
 import {jwtDecode} from "jwt-decode";
-import axios from "axios";
+import {POST_CHANGE_PASSWORD} from "../modules/LoginModule";
 
 
 const accessToken = window.localStorage.getItem('accessToken');
 const decodedToken = accessToken ? jwtDecode(accessToken) : null;
+const userNo = decodedToken && decodedToken.sub;
 
+// 유저 조회 코드 ( JWT )
 export const callGetNickname = () => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/user/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/user/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'GET',
             headers: {
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -29,12 +32,14 @@ export const callGetNickname = () => {
     }
 }
 
+// 친구 요청
 export const callGetFriend = () => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/friend/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/friend/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'GET',
             headers: {
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -44,12 +49,14 @@ export const callGetFriend = () => {
     }
 }
 
+// 친구 요청 조회
 export const callGetFriendRequest = () => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/friendRequest/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/friendRequest/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'GET',
             headers: {
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -59,14 +66,14 @@ export const callGetFriendRequest = () => {
     }
 }
 
-
-
+// 친구 조회
 export const callPostFriend = (email) => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/friend/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/friend/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
+                'Authorization' : 'Bearer' + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },body: JSON.stringify(email)
@@ -75,13 +82,14 @@ export const callPostFriend = (email) => {
         dispatch({ type: POST_ADD_FRIEND, payload: result.data });
     }
 }
-
+// 유저 프로필 수정
 export const callPostChageUser = (data) => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/change/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/change/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
+                'Authorization' : 'Bearer ' + accessToken,
                 'Accept': '*/*'
             },body: data
         }).then(response => response.json());
@@ -93,12 +101,14 @@ export const callPostChageUser = (data) => {
     }
 }
 
+// 친구 요청 수락
 export const callPostApproval = (friendId) => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/approval/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/approval/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
+                'Authorization' : 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },body: JSON.stringify(friendId)
@@ -110,12 +120,14 @@ export const callPostApproval = (friendId) => {
     }
 }
 
+// 친구 요청 거절
 export const callPostRefusal = (friendId) => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/refusal/${decodedToken.sub}`;
+    const requestURL = `${process.env.REACT_APP_API_URL}/refusal/${userNo}`;
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
+                'Authorization' : 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },body: JSON.stringify(friendId)
@@ -126,12 +138,34 @@ export const callPostRefusal = (friendId) => {
     }
 }
 
+// 비밀번호 변경
+export const callPostPassword = (user) =>{
+    const requestURL = `${process.env.REACT_APP_API_URL}/changePassword`;
+    return async (dispatch, getState) => {
+        const result = await fetch(requestURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            },
+            body : JSON.stringify(user)
+        }).then(response => response.json());
+        dispatch({ type: POST_CHANGE_PASSWORD, payload: result });
+        alert(result.message)
+        window.location.reload();
+    }
+}
+
+
+
+
 export const callFetchChatData = (channelId) => {
-    const requestURL = `${process.env.REACT_APP_API_URL}/chat/${channelId}/${decodedToken.sub}`
+    const requestURL = `${process.env.REACT_APP_API_URL}/chat/${channelId}/${userNo}`
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'GET',
             headers: {
+                'Authorization' : 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -147,6 +181,7 @@ export const callSearchData = () =>{
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
+                'Authorization' : 'Bearer ' + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },

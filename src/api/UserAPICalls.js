@@ -4,9 +4,10 @@ import {
     POST_CHECK,
     POST_MAIL,
     POST_GOOGLE_LOGIN,
-    POST_FIND_EMAIL, POST_CHANGE_PASSWORD, POST_PASSWORD_MAIL
+    POST_FIND_EMAIL, POST_PASSWORD_MAIL
 } from "../modules/LoginModule";
 
+const accessToken= window.localStorage.getItem('accessToken');
 
 export const callPostSignUp = (user) => {
 
@@ -157,24 +158,5 @@ export const callPostPasswordMail = (email) =>{
         }
     }
 }
-
-
-export const callPostPassword = (user) =>{
-    const requestURL = `${process.env.REACT_APP_API_URL}/changePassword`;
-    return async (dispatch, getState) => {
-        const result = await fetch(requestURL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': '*/*'
-            },
-            body : JSON.stringify(user)
-        }).then(response => response.json());
-        dispatch({ type: POST_CHANGE_PASSWORD, payload: result });
-        alert(result.message)
-        window.location.reload();
-    }
-}
-
 
 

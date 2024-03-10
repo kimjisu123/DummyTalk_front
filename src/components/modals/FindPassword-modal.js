@@ -9,7 +9,8 @@ import {Button} from "../../components/ui/button";
 import {useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {useModal} from "src/components/hooks/use-modal";
-import {callPostCheck, callPostEmail, callPostMail, callPostPassword, callPostPasswordMail} from "src/api/UserAPICalls";
+import {callPostCheck, callPostEmail, callPostMail, callPostPasswordMail} from "src/api/UserAPICalls";
+import { callPostPassword } from "src/api/MainAPICalls";
 
 export const FindPasswordModal = () =>{
 
