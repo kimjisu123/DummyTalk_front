@@ -3,7 +3,6 @@ import { Navigate, Outlet, useNavigate } from "react-router-dom";
 
 export const AuthProvider = () => {
     const navigate = useNavigate();
-
     const accessToken = window.localStorage.getItem("accessToken");
     const decodedToken = accessToken ? jwtDecode(accessToken) : null;
 
@@ -21,7 +20,6 @@ export const AuthProvider = () => {
 
         return <Navigate to={"/sign-up"} replace={true} />
     }
-
 
     return <Outlet />;
 };

@@ -11,6 +11,7 @@ import {jwtDecode} from "jwt-decode";
 import {POST_CHANGE_PASSWORD} from "../modules/LoginModule";
 
 
+const refreshToken  = window.localStorage.getItem('refreshToken');
 const accessToken = window.localStorage.getItem('accessToken');
 const decodedToken = accessToken ? jwtDecode(accessToken) : null;
 const userNo = decodedToken && decodedToken.sub;
@@ -57,6 +58,7 @@ export const callGetFriendRequest = () => {
             method: 'GET',
             headers: {
                 'Authorization' : 'Bearer ' + userNo + accessToken,
+                'RefreshToken' : refreshToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -73,7 +75,7 @@ export const callPostFriend = (email) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
-                'Authorization' : 'Bearer' + accessToken,
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },body: JSON.stringify(email)
@@ -89,7 +91,7 @@ export const callPostChageUser = (data) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
-                'Authorization' : 'Bearer ' + accessToken,
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Accept': '*/*'
             },body: data
         }).then(response => response.json());
@@ -108,7 +110,7 @@ export const callPostApproval = (friendId) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
-                'Authorization' : 'Bearer ' + accessToken,
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },body: JSON.stringify(friendId)
@@ -127,7 +129,7 @@ export const callPostRefusal = (friendId) => {
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
-                'Authorization' : 'Bearer ' + accessToken,
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },body: JSON.stringify(friendId)
@@ -145,6 +147,7 @@ export const callPostPassword = (user) =>{
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -165,7 +168,7 @@ export const callFetchChatData = (channelId) => {
         const result = await fetch(requestURL, {
             method: 'GET',
             headers: {
-                'Authorization' : 'Bearer ' + accessToken,
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },
@@ -181,7 +184,7 @@ export const callSearchData = () =>{
         const result = await fetch(requestURL, {
             method: 'POST',
             headers: {
-                'Authorization' : 'Bearer ' + accessToken,
+                'Authorization' : 'Bearer ' + userNo + accessToken,
                 'Content-Type': 'application/json',
                 'Accept': '*/*'
             },

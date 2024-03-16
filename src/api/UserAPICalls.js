@@ -6,8 +6,11 @@ import {
     POST_GOOGLE_LOGIN,
     POST_FIND_EMAIL, POST_PASSWORD_MAIL
 } from "../modules/LoginModule";
+import {jwtDecode} from "jwt-decode";
 
 const accessToken= window.localStorage.getItem('accessToken');
+const decodedToken = accessToken ? jwtDecode(accessToken) : null;
+const userNo = decodedToken && decodedToken.sub;
 
 export const callPostSignUp = (user) => {
 
@@ -55,7 +58,7 @@ export const callPotLogin = (user) => {
         if(result.status == 200){
 
             window.localStorage.setItem('accessToken', result.data.accessToken); // key : value
-            console.log(localStorage.getItem('accessToken'))
+            window.localStorage.setItem('refreshToken', jwtDecode(result.data.accessToken).refreshToken);
             dispatch({ type: POST_LOGIN, payload: result });
             alert(result.message)
             window.location.reload();
@@ -82,13 +85,11 @@ export const callPostGoogleLogin = (credential) =>{
 
         console.log(result.data)
         if(result.status == 200){
-
             window.localStorage.setItem('accessToken', result.data.accessToken); // key : value
-            console.log(localStorage.getItem('accessToken'))
+            window.localStorage.setItem('refreshToken', jwtDecode(result.data.accessToken).refreshToken);
             dispatch({ type: POST_GOOGLE_LOGIN, payload: result });
             alert(result.message)
             window.location.reload();
-
         }
     }
 }
@@ -158,5 +159,7 @@ export const callPostPasswordMail = (email) =>{
         }
     }
 }
+
+
 
 
