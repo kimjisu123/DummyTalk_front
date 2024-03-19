@@ -15,7 +15,7 @@ export const POST_MAIL = 'sign/POST_MAIL';
 export const POST_FIND_EMAIL = "login/POST_FIND_EMAIL"
 export const POST_PASSWORD_MAIL = "login/POST_PASSWORD_MAIL"
 export const POST_CHANGE_PASSWORD = "login/POST_CHANGE_PASSWORD"
-
+export const POST_REFRESHTOKEN = "login/POST_REFRESHTOKEN"
 
 //리듀서
 export const signUpReducer = handleActions(
@@ -82,7 +82,6 @@ export const passwordMailReducer = handleActions(
     initialState
 );
 
-
 export const changePasswordReducer = handleActions(
     {
         [POST_CHANGE_PASSWORD] : (state, { payload }) =>{
@@ -92,3 +91,11 @@ export const changePasswordReducer = handleActions(
     initialState
 );
 
+export const refreshTokenReducer = handleActions(
+    {
+        [POST_REFRESHTOKEN] : (state, { payload }) =>{
+            return payload
+        },
+    },
+    initialState
+);

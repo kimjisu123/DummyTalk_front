@@ -6,7 +6,7 @@ import {
     googleLoginReducer,
     loginReducer,
     mailReducer, passwordMailReducer,
-    signUpReducer
+    signUpReducer, refreshTokenReducer
 } from './LoginModule'
 import {
     addFriendReducer,
@@ -34,7 +34,8 @@ const rootReducer = combineReducers({
     approvalReducer,
     refusalReducer,
     chatReducer,
-    searchReducer
+    searchReducer,
+    refreshTokenReducer
 })
 
 export default rootReducer;

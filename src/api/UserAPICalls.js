@@ -4,10 +4,17 @@ import {
     POST_CHECK,
     POST_MAIL,
     POST_GOOGLE_LOGIN,
-    POST_FIND_EMAIL, POST_PASSWORD_MAIL
+    POST_FIND_EMAIL, POST_PASSWORD_MAIL,
+    POST_REFRESHTOKEN
 } from "../modules/LoginModule";
 import {jwtDecode} from "jwt-decode";
+import {Navigate, useNavigate} from "react-router-dom";
+import {TokenExpiration} from "src/components/providers/AuthProvider";
 
+
+
+
+const refreshToken= window.localStorage.getItem('refreshToken');
 const accessToken= window.localStorage.getItem('accessToken');
 const decodedToken = accessToken ? jwtDecode(accessToken) : null;
 const userNo = decodedToken && decodedToken.sub;
@@ -15,7 +22,6 @@ const userNo = decodedToken && decodedToken.sub;
 export const callPostSignUp = (user) => {
 
     const requestURL = `${process.env.REACT_APP_API_URL}/signUp`;
-
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'POST',
@@ -43,6 +49,7 @@ export const callPostSignUp = (user) => {
 // 로그인
 export const callPotLogin = (user) => {
     const requestURL = `${process.env.REACT_APP_API_URL}/login`;
+
     return async (dispatch, getState) => {
         const result = await fetch(requestURL, {
             method: 'POST',
@@ -87,6 +94,7 @@ export const callPostGoogleLogin = (credential) =>{
         if(result.status == 200){
             window.localStorage.setItem('accessToken', result.data.accessToken); // key : value
             window.localStorage.setItem('refreshToken', jwtDecode(result.data.accessToken).refreshToken);
+            console.log(window.localStorage.get)
             dispatch({ type: POST_GOOGLE_LOGIN, payload: result });
             alert(result.message)
             window.location.reload();
@@ -159,7 +167,35 @@ export const callPostPasswordMail = (email) =>{
         }
     }
 }
+export const callPostRefresuhToken = () =>{
+    const requestURL = `${process.env.REACT_APP_API_URL}/refreshToken`;
+    return async (dispatch, getState) => {
+        const result = await fetch(requestURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': '*/*'
+            },
+            body : JSON.stringify({"refreshToken" : refreshToken})
+        }).then(response => response.json());
+        dispatch({ type: POST_REFRESHTOKEN, payload: result });
+        if(result.status == 200){
+            window.localStorage.setItem('accessToken', result.data.accessToken);
+        } else {
+            if(window.localStorage.getItem('accessToken') == null) {
+                alert("로그인이 필요합니다.");
 
+                return <Navigate to={"/sign-up"} replace={true}/>
+            }
 
+            const verified = TokenExpiration(decodedToken);
 
+            if (verified === false) {
+                alert("로그인 세션시간이 만료되었습니다.");
+
+                return <Navigate to={"/sign-up"} replace={true} />
+            }
+        }
+    }
+}
 
